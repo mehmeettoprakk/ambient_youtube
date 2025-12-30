@@ -1,36 +1,138 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Müzik Duygu Mikseri 🎵
 
-## Getting Started
+YouTube müzik videolarına YouTube ambient efektleri ekleyen Next.js uygulaması.
 
-First, run the development server:
+## Özellikler
+
+- 🎵 YouTube video URL'si ile müzik çalma
+- 🔗 YouTube ambient efekt linklerini ekleme (dalga, şömine, yağmur, doğa vb.)
+- 🎛️ Her ambient efekt için ayrı ses seviyesi kontrolü
+- ⚡ Gerçek zamanlı YouTube player ses karıştırma
+- 📱 Responsive tasarım
+- 🎨 Modern ve kullanıcı dostu arayüz
+- ➕ 5 farklı ambient efekt slotu
+
+## Kurulum
+
+1. Projeyi klonlayın:
+
+```bash
+git clone [repo-url]
+cd mzk_dlg
+```
+
+2. Bağımlılıkları yükleyin:
+
+```bash
+npm install
+```
+
+3. Geliştirme sunucusunu başlatın:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+4. Tarayıcınızda http://localhost:3000 adresini açın
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Kullanım
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Müzik Ekleme:
 
-## Learn More
+1. Ana müzik için YouTube videosunun URL'sini giriş alanına yapıştırın
+2. "Yükle" butonuna tıklayın
+3. Müziği çalmak için play butonuna basın
 
-To learn more about Next.js, take a look at the following resources:
+### Ambient Efekt Ekleme:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. Sağ taraftaki "Ekle" butonuna tıklayın
+2. Efekt ismi girin (örn: "Dalga Sesi")
+3. YouTube ambient ses URL'sini yapıştırın
+4. "Kaydet" butonuna tıklayın
+5. Efekti çalmak için play butonuna basın
+6. Volume seviyesini ayarlayın
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Önerilen Ambient YouTube Videoları:
 
-## Deploy on Vercel
+- **Dalga Sesi**: Okyanus, plaj dalgaları
+- **Şömine**: Crackling fireplace, wood burning
+- **Yağmur**: Rain sounds, thunderstorm
+- **Orman**: Forest ambience, bird sounds
+- **Kafe**: Coffee shop ambience, cafe sounds
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Teknolojiler
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Next.js 16** - React framework
+- **TypeScript** - Type safety
+- **Tailwind CSS** - Styling
+- **React YouTube** - YouTube player
+- **Lucide React** - Icons
+- **Web Audio API** - Ses işleme
+
+## Yeni Özellikler
+
+- ✅ YouTube linklerle ambient ses ekleme
+- ✅ Dinamik ambient efekt yönetimi
+- ✅ Efekt ekleme/çıkarma
+- ✅ Çoklu YouTube player desteği
+- ✅ Real-time ses kontrolü
+
+## Proje Yapısı
+
+```
+mzk_dlg/
+├── app/
+│   ├── components/          # React bileşenleri
+│   │   ├── YouTubePlayer.tsx
+│   │   └── AmbientControls.tsx
+│   ├── hooks/               # Custom hooks
+│   │   └── useAudioMixer.ts
+│   ├── utils/               # Utility fonksiyonlar
+│   │   └── youtube.ts
+│   ├── globals.css
+│   ├── layout.tsx
+│   └── page.tsx
+├── public/
+│   └── ambient/             # Ambient ses dosyaları
+└── ...
+```
+
+## Geliştirme
+
+### Yeni Ambient Ses Ekleme
+
+1. `app/hooks/useAudioMixer.ts` dosyasında `ambientSounds` dizisine yeni ses ekleyin
+2. `app/components/AmbientControls.tsx` dosyasında `soundIcons` objesine ikon ekleyin
+3. Ses dosyasını `public/ambient/` klasörüne yerleştirin
+
+### Build ve Deploy
+
+```bash
+# Production build
+npm run build
+
+# Production başlatma
+npm start
+```
+
+## Lisans
+
+Bu proje MIT lisansı altında lisanslanmıştır.
+
+## Katkıda Bulunma
+
+1. Fork yapın
+2. Feature branch oluşturun (`git checkout -b feature/AmazingFeature`)
+3. Değişikliklerinizi commit edin (`git commit -m 'Add some AmazingFeature'`)
+4. Branch'inizi push edin (`git push origin feature/AmazingFeature`)
+5. Pull Request oluşturun
+
+## Bilinen Sorunlar
+
+- Ambient ses dosyaları yüklenmemişse sessizlik olacaktır
+- İlk ambient ses çalmadan önce kullanıcı etkileşimi gereklidir (tarayıcı politikası)
+
+## Geliştirici
+
+Geliştirici: [İsminiz]
+İletişim: [email@example.com]
