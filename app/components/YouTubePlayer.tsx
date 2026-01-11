@@ -45,7 +45,16 @@ export default function YouTubePlayer({ videoId, onReady }: YouTubePlayerProps) 
 
   const onPlayerReady: YouTubeProps['onReady'] = (event) => {
     playerRef.current = event.target;
-    event.target.setVolume(volume);
+    
+    // Set initial volume and ensure not muted
+    try {
+      event.target.unMute();
+      event.target.setVolume(volume);
+      setIsMuted(false);
+    } catch (error) {
+      console.error('Error setting initial volume:', error);
+    }
+    
     setIsPlayerReady(true);
     
     // Video süresini al
@@ -57,7 +66,19 @@ export default function YouTubePlayer({ videoId, onReady }: YouTubePlayerProps) 
   };
 
   const onPlayerStateChange: YouTubeProps['onStateChange'] = (event) => {
-    setIsPlaying(event.data === 1); // YT.PlayerState.PLAYING = 1
+    // YT.PlayerState: -1 (unstarted), 0 (ended), 1 (playing), 2 (paused), 3 (buffering), 5 (video cued)
+    const isCurrentlyPlaying = event.data === 1;
+    setIsPlaying(isCurrentlyPlaying);
+    
+    // If buffering (3) and we expect to be playing, log it
+    if (event.data === 3 && isPlaying) {
+      console.log('Video is buffering...');
+    }
+    
+    // If video ended unexpectedly while playing
+    if (event.data === 0 || event.data === 2) {
+      setIsPlaying(false);
+    }
   };
 
   // Süre güncelleyici
@@ -85,43 +106,79 @@ export default function YouTubePlayer({ videoId, onReady }: YouTubePlayerProps) 
   };
 
   const handleProgressClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!playerRef.current || !duration) return;
+    if (!playerRef.current || !duration || !isPlayerReady) return;
     
-    const rect = e.currentTarget.getBoundingClientRect();
-    const clickX = e.clientX - rect.left;
-    const percentage = clickX / rect.width;
-    const newTime = percentage * duration;
-    
-    playerRef.current.seekTo(newTime);
-    setCurrentTime(newTime);
+    try {
+      const rect = e.currentTarget.getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const percentage = clickX / rect.width;
+      const newTime = percentage * duration;
+      
+      if (playerRef.current?.seekTo) {
+        playerRef.current.seekTo(newTime);
+        setCurrentTime(newTime);
+      }
+    } catch (error) {
+      console.error('Error seeking:', error);
+    }
   };
 
   const togglePlayPause = () => {
-    if (!playerRef.current) return;
+    if (!playerRef.current || !isPlayerReady) return;
 
-    if (isPlaying) {
-      playerRef.current.pauseVideo();
-    } else {
-      playerRef.current.playVideo();
+    try {
+      if (isPlaying) {
+        playerRef.current?.pauseVideo();
+      } else {
+        // Unmute first if muted to ensure sound plays
+        if (isMuted && playerRef.current?.unMute) {
+          playerRef.current.unMute();
+          setIsMuted(false);
+        }
+        if (playerRef.current?.playVideo) {
+          playerRef.current.playVideo();
+        }
+      }
+    } catch (error) {
+      console.error('Error toggling play/pause:', error);
     }
   };
 
   const toggleMute = () => {
-    if (!playerRef.current) return;
+    if (!playerRef.current || !isPlayerReady) return;
 
-    if (isMuted) {
-      playerRef.current.unMute();
-      setIsMuted(false);
-    } else {
-      playerRef.current.mute();
-      setIsMuted(true);
+    try {
+      if (isMuted) {
+        if (playerRef.current?.unMute) {
+          playerRef.current.unMute();
+          setIsMuted(false);
+        }
+      } else {
+        if (playerRef.current?.mute) {
+          playerRef.current.mute();
+          setIsMuted(true);
+        }
+      }
+    } catch (error) {
+      console.error('Error toggling mute:', error);
     }
   };
 
   const handleVolumeChange = (newVolume: number) => {
     setVolume(newVolume);
-    if (playerRef.current) {
-      playerRef.current.setVolume(newVolume);
+    if (playerRef.current && isPlayerReady) {
+      try {
+        // If volume is being increased and player was muted, unmute it
+        if (newVolume > 0 && isMuted && playerRef.current?.unMute) {
+          playerRef.current.unMute();
+          setIsMuted(false);
+        }
+        if (playerRef.current?.setVolume) {
+          playerRef.current.setVolume(newVolume);
+        }
+      } catch (error) {
+        console.error('Error setting volume:', error);
+      }
     }
   };
 
